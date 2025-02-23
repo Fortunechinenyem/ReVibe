@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function Login({ onClose, onSwitchToSignup }) {
   const [email, setEmail] = useState("");
@@ -144,7 +145,6 @@ function Signup({ onClose, onSwitchToLogin }) {
   );
 }
 
-// Navbar Component
 export default function Navbar({ user }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);

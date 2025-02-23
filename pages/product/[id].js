@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Navbar from "@/app/components/Navbar";
+import Image from "next/image";
 
 export default function ProductPage() {
   const router = useRouter();
