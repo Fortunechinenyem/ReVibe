@@ -4,11 +4,13 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductPage() {
   const router = useRouter();
   const { id } = router.query;
   const [product, setProduct] = useState(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -43,7 +45,10 @@ export default function ProductPage() {
             <h1 className="text-3xl font-bold">{product.name}</h1>
             <p className="text-gray-600 text-2xl">₦{product.price}</p>
             <p className="text-gray-500 mt-4">{product.description}</p>
-            <button className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <button
+              className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+              onClick={() => addToCart(product)}
+            >
               Add to Cart
             </button>
           </div>

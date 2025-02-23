@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
+import { ShoppingCart } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function Login({ onClose, onSwitchToSignup }) {
@@ -150,6 +152,7 @@ export default function Navbar({ user }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const router = useRouter();
+  const { cart } = useCart();
 
   const handleLogout = async () => {
     try {
@@ -193,17 +196,15 @@ export default function Navbar({ user }) {
 
         <div className="hidden md:flex space-x-8 items-center">
           <Link
-            href="/contact"
-            className="text-indigo-900 hover:text-purple-600 transition duration-300"
-          >
-            Contact
-          </Link>
-
-          <Link
             href="/cart"
-            className="text-indigo-900 hover:text-purple-600 transition duration-300"
+            className="relative text-indigo-900 hover:text-purple-600 transition duration-300"
           >
-            Cart
+            <ShoppingCart size={24} />
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                {cart.length}
+              </span>
+            )}
           </Link>
 
           {user ? (
@@ -246,16 +247,15 @@ export default function Navbar({ user }) {
         }`}
       >
         <Link
-          href="/contact"
-          className="block text-indigo-900 hover:text-purple-600 py-2 transition duration-300"
-        >
-          Contact
-        </Link>
-        <Link
           href="/cart"
-          className="block text-indigo-900 hover:text-purple-600 py-2 transition duration-300"
+          className="relative text-indigo-900 hover:text-purple-600 transition duration-300"
         >
-          Cart
+          <ShoppingCart size={24} />
+          {cart.length > 0 && (
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+              {cart.length}
+            </span>
+          )}
         </Link>
 
         {user ? (
