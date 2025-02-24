@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Vintage Jacket",
+    "description": "A stylish vintage jacket in excellent condition.",
+    "price": 29.99,
+    "category": "Clothing",
+    "imageUrl": "/uploads/jacket.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Smartphone",
+    "description": "A high-end smartphone with great features.",
+    "price": 499.99,
+    "category": "Electronics",
+    "imageUrl": "/uploads/phone.jpg"
+  }
+]

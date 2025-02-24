@@ -38,6 +38,8 @@ export default function ProductForm() {
       setPrice("");
       setCategory("");
       setImage(null);
+
+      if (onSuccess) onSuccess();
     } catch (err) {
       setError(err.message);
     } finally {

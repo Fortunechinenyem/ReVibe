@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+
 import Navbar from "@/app/components/Navbar";
 import ProductCard from "@/app/components/ProductCard";
+import Link from "next/link";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const productsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setProducts(productsData);
+      try {
+        const response = await fetch("/api/products");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
     };
 
     fetchProducts();
@@ -31,9 +32,11 @@ export default function Home() {
             Discover amazing second-hand items at unbeatable prices. Shop
             sustainably and save big!
           </p>
-          <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300">
-            Shop Now
-          </button>
+          <Link href="/product">
+            <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300">
+              Shop Now
+            </button>
+          </Link>
         </div>
       </div>
 

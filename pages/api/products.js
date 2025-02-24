@@ -1,9 +1,17 @@
 import formidable from "formidable";
-import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
-const prisma = new PrismaClient();
+const productsFilePath = path.join(process.cwd(), "data", "products.json");
+
+const readProducts = () => {
+  const fileData = fs.readFileSync(productsFilePath);
+  return JSON.parse(fileData);
+};
+
+const writeProducts = (products) => {
+  fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
+};
 
 export const config = {
   api: {
@@ -34,22 +42,39 @@ export default async function handler(req, res) {
         const fileName = path.basename(filePath);
         const imageUrl = `/uploads/${fileName}`;
 
-        const product = await prisma.product.create({
-          data: {
-            name,
-            description,
-            price: parseFloat(price),
-            category,
-            imageUrl,
-          },
-        });
+        const products = readProducts();
 
-        res
-          .status(201)
-          .json({ product, message: "Product added successfully!" });
+        const newProduct = {
+          id: products.length + 1,
+          name,
+          description,
+          price: parseFloat(price),
+          category,
+          imageUrl,
+        };
+
+        products.push(newProduct);
+
+        writeProducts(products);
+
+        res.status(201).json({
+          product: newProduct,
+          message: "Product added successfully!",
+        });
       });
     } catch (error) {
       console.error("Error adding product:", error);
+      res
+        .status(500)
+        .json({ message: "Internal Server Error", error: error.message });
+    }
+  } else if (req.method === "GET") {
+    try {
+      const products = readProducts();
+
+      res.status(200).json(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
       res
         .status(500)
         .json({ message: "Internal Server Error", error: error.message });
