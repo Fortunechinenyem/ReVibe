@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-
 import Link from "next/link";
-
 import { registerUser } from "@/lib/firebase";
 import { addUserToFirestore } from "@/lib/firestore";
 
@@ -23,10 +20,12 @@ export default function Signup() {
       const user = userCredential.user;
 
       await addUserToFirestore(user);
+
       await updateProfile(user, { displayName: name });
 
       console.log("User successfully signed up and added to Firestore!");
-      router.push("/dashboard");
+
+      router.push("/profile");
     } catch (error) {
       console.error("Error during sign-up:", error.message);
       setError(error.message);

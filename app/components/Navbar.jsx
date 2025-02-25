@@ -7,21 +7,31 @@ import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { registerUser } from "@/lib/firebase";
+import { updateProfile } from "firebase/auth";
+import { addUserToFirestore } from "@/lib/firestore";
+
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function Login({ onClose, onSwitchToSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      onClose();
-    } catch (err) {
-      setError(err.message);
+      const userCredential = await loginUser(email, password);
+      const user = userCredential.user;
+
+      console.log("User successfully logged in:", user);
+      router.push("/profile");
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      setError(error.message);
     }
   };
 
@@ -79,18 +89,29 @@ function Login({ onClose, onSwitchToSignup }) {
 }
 
 function Signup({ onClose, onSwitchToLogin }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      onClose();
-    } catch (err) {
-      setError(err.message);
+      const userCredential = await registerUser(email, password, name);
+      const user = userCredential.user;
+
+      await addUserToFirestore(user);
+
+      await updateProfile(user, { displayName: name });
+
+      console.log("User successfully signed up and added to Firestore!");
+
+      router.push("/profile");
+    } catch (error) {
+      console.error("Error during sign-up:", error.message);
+      setError(error.message);
     }
   };
 
@@ -100,6 +121,16 @@ function Signup({ onClose, onSwitchToLogin }) {
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleSignup}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">Name</label>
+            <input
+              type="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 border rounded-lg"
+              required
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Email</label>
             <input
