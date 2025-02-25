@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -15,16 +13,24 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       if (id) {
-        const docRef = doc(db, "products", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setProduct({ id: docSnap.id, ...docSnap.data() });
+        try {
+          const res = await fetch(`/api/products/${id}`);
+          const data = await res.json();
+
+          if (res.ok) {
+            setProduct(data);
+          } else {
+            console.error("Product not found");
+            router.push("/404");
+          }
+        } catch (error) {
+          console.error("Error fetching product:", error);
         }
       }
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, router]);
 
   if (!product) return <p>Loading...</p>;
 
@@ -35,10 +41,11 @@ export default function ProductPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="relative h-96">
             <Image
-              src={product.image}
+              src={product.imageUrl}
               alt={product.name}
               layout="fill"
               objectFit="cover"
+              className="rounded-lg"
             />
           </div>
           <div>

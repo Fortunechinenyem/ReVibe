@@ -14,6 +14,16 @@ const writeProducts = (products) => {
 
 export default async function handler(req, res) {
   const { id } = req.query;
+  const fileData = fs.readFileSync(productsFilePath);
+  const products = JSON.parse(fileData);
+
+  const product = products.find((p) => p.id === parseInt(id));
+
+  if (product) {
+    res.status(200).json(product);
+  } else {
+    res.status(404).json({ message: "Product not found" });
+  }
 
   if (req.method === "DELETE") {
     try {

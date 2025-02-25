@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
+import { motion } from "framer-motion";
 import Navbar from "@/app/components/Navbar";
 import ProductCard from "@/app/components/ProductCard";
 import Link from "next/link";
+import Categories from "@/app/components/Categories";
+import FeaturedProducts from "@/app/components/FeaturedProducts";
+import Footer from "@/app/components/Footer";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -25,54 +30,71 @@ export default function Home() {
     <div>
       <Navbar />
 
-      <div className="bg-purple-600 text-white py-20">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-4">Welcome to Revibe</h1>
-          <p className="text-lg mb-8">
-            Discover amazing second-hand items at unbeatable prices. Shop
-            sustainably and save big!
-          </p>
-          <Link href="/product">
-            <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300">
-              Shop Now
-            </button>
-          </Link>
-        </div>
-      </div>
+      <div className="bg-purple-600 text-white py-20 relative overflow-hidden">
+        <div className="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between px-6 lg:px-20">
+          <motion.div
+            className="text-center lg:text-left max-w-lg"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Welcome to Revibe
+            </h1>
 
-      <div className="container mx-auto py-12">
-        <h2 className="text-2xl font-bold mb-8 text-center">
-          Shop by Category
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {[
-            { name: "Clothing", icon: "👕" },
-            { name: "Electronics", icon: "📱" },
-            { name: "Furniture", icon: "🪑" },
-            { name: "Books", icon: "📚" },
-            { name: "Accessories", icon: "🕶️" },
-          ].map((category, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow duration-300"
+            <p className="text-lg mb-6">
+              Discover amazing second-hand items at unbeatable prices. Shop
+              sustainably and save big!
+            </p>
+
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <span className="text-4xl mb-4">{category.icon}</span>
-              <h3 className="text-lg font-semibold">{category.name}</h3>
-            </div>
-          ))}
+              <Link href="/product">
+                <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300 shadow-lg">
+                  Shop Now
+                </button>
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            className="relative w-72 md:w-96 lg:w-[500px] mx-auto"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <Image
+              src="/images/revibe2.png"
+              alt="Shopping illustration"
+              width={500}
+              height={500}
+              className="mx-auto"
+            />
+          </motion.div>
         </div>
+
+        <motion.div
+          className="absolute top-10 left-10 w-16 h-16 bg-white/20 rounded-full"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-10 right-10 w-24 h-24 bg-white/10 rounded-full"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
       </div>
 
-      <div className="container mx-auto py-12">
-        <h2 className="text-2xl font-bold mb-8 text-center">
-          Featured Products
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </div>
+      <section>
+        {" "}
+        <Categories />
+      </section>
+      <section>
+        <FeaturedProducts products={products} />
+      </section>
 
       <div className="bg-gray-100 py-12">
         <div className="container mx-auto">
@@ -113,59 +135,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-purple-600 text-white py-12">
-        <div className="container mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">
-            Subscribe to Our Newsletter
-          </h2>
-          <p className="text-lg mb-8">
-            Get the latest updates on new arrivals, exclusive deals, and more!
-          </p>
-          <form className="flex justify-center">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-64 px-4 py-2 rounded-l-lg focus:outline-none text-gray-800"
-            />
-            <button
-              type="submit"
-              className="bg-white text-purple-600 px-6 py-2 rounded-r-lg font-semibold hover:bg-purple-100 transition duration-300"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto text-center">
-          <div className="flex justify-center space-x-6 mb-4">
-            <a href="#" className="hover:text-purple-400">
-              About Us
-            </a>
-            <a href="#" className="hover:text-purple-400">
-              Contact
-            </a>
-            <a href="#" className="hover:text-purple-400">
-              Privacy Policy
-            </a>
-          </div>
-          <div className="flex justify-center space-x-4">
-            <a href="#" className="hover:text-purple-400">
-              <i className="fab fa-facebook"></i>
-            </a>
-            <a href="#" className="hover:text-purple-400">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="#" className="hover:text-purple-400">
-              <i className="fab fa-instagram"></i>
-            </a>
-          </div>
-          <p className="mt-4 text-sm">
-            &copy; {new Date().getFullYear()} Revibe. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

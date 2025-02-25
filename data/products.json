@@ -1,18 +1,122 @@
 [
   {
     "id": 1,
-    "name": "Vintage Jacket",
-    "description": "A stylish vintage jacket in excellent condition.",
-    "price": 29.99,
+    "name": "Vintage Ankara Jacket",
+    "description": "A stylish vintage jacket made with traditional Nigerian Ankara fabric.",
+    "price": 15000,
     "category": "Clothing",
-    "imageUrl": "/uploads/jacket.jpg"
+    "imageUrl": "/uploads/ankara_jacket.jpg"
   },
   {
     "id": 2,
-    "name": "Smartphone",
-    "description": "A high-end smartphone with great features.",
-    "price": 499.99,
+    "name": "Used iPhone X",
+    "description": "A high-end smartphone in good condition, perfect for everyday use.",
+    "price": 120000,
     "category": "Electronics",
-    "imageUrl": "/uploads/phone.jpg"
+    "imageUrl": "/uploads/iphone_x.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Wooden Dining Chair",
+    "description": "A sturdy and comfortable wooden dining chair, great for your home.",
+    "price": 25000,
+    "category": "Furniture",
+    "imageUrl": "/uploads/wooden_chair.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Plain White T-Shirt",
+    "description": "A simple and casual T-shirt, suitable for everyday wear.",
+    "price": 3000,
+    "category": "Clothing",
+    "imageUrl": "/uploads/white_tshirt.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Used Laptop Bag",
+    "description": "A durable laptop bag with multiple compartments, perfect for work or school.",
+    "price": 8000,
+    "category": "Accessories",
+    "imageUrl": "/uploads/laptop_bag.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Second-hand Novel",
+    "description": "A gently used novel by a popular Nigerian author.",
+    "price": 2000,
+    "category": "Books",
+    "imageUrl": "/uploads/nigerian_novel.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Traditional Beaded Necklace",
+    "description": "A beautiful handmade beaded necklace, perfect for cultural events.",
+    "price": 5000,
+    "category": "Accessories",
+    "imageUrl": "/uploads/beaded_necklace.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Used Blender",
+    "description": "A reliable blender for making smoothies, soups, and more.",
+    "price": 15000,
+    "category": "Electronics",
+    "imageUrl": "/uploads/blender.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Second-hand Jeans",
+    "description": "A pair of durable jeans in good condition, suitable for casual outings.",
+    "price": 7000,
+    "category": "Clothing",
+    "imageUrl": "/uploads/jeans.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Wooden Coffee Table",
+    "description": "A stylish wooden coffee table, perfect for your living room.",
+    "price": 35000,
+    "category": "Furniture",
+    "imageUrl": "/uploads/coffee_table.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Used Wristwatch",
+    "description": "A classic wristwatch in good working condition.",
+    "price": 10000,
+    "category": "Accessories",
+    "imageUrl": "/uploads/wristwatch.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Second-hand Textbooks",
+    "description": "A collection of used textbooks for students.",
+    "price": 5000,
+    "category": "Books",
+    "imageUrl": "/uploads/textbooks.jpg"
+  },
+  {
+    "id": 13,
+    "name": "Traditional Aso Oke Fabric",
+    "description": "A beautiful Aso Oke fabric, perfect for making traditional outfits.",
+    "price": 10000,
+    "category": "Clothing",
+    "imageUrl": "/uploads/aso_oke.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Used Microwave Oven",
+    "description": "A functional microwave oven for quick and easy cooking.",
+    "price": 30000,
+    "category": "Electronics",
+    "imageUrl": "/uploads/microwave.jpg"
+  },
+  {
+    "id": 15,
+    "name": "Wooden Bookshelf",
+    "description": "A sturdy wooden bookshelf for organizing your books and decor.",
+    "price": 40000,
+    "category": "Furniture",
+    "imageUrl": "/uploads/bookshelf.jpg"
   }
 ]
