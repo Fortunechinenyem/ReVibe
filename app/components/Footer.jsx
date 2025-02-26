@@ -19,18 +19,10 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/features"
+                  href="/products"
                   className="text-gray-400 hover:text-white"
                 >
-                  Features
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/pricing"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Pricing
+                  Products
                 </Link>
               </li>
               <li>
@@ -42,10 +34,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/auth/login"
-                  className="text-gray-400 hover:text-white"
-                >
+                <Link href="/login" className="text-gray-400 hover:text-white">
                   Login
                 </Link>
               </li>

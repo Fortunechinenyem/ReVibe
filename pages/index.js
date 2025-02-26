@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-
 import { motion } from "framer-motion";
 import Navbar from "@/app/components/Navbar";
-import ProductCard from "@/app/components/ProductCard";
 import Link from "next/link";
 import Categories from "@/app/components/Categories";
 import FeaturedProducts from "@/app/components/FeaturedProducts";
@@ -11,6 +9,7 @@ import Footer from "@/app/components/Footer";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [trendingProducts, setTrendingProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,6 +17,8 @@ export default function Home() {
         const response = await fetch("/api/products");
         const data = await response.json();
         setProducts(data);
+
+        setTrendingProducts(data.slice(0, 4));
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -41,18 +42,16 @@ export default function Home() {
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Welcome to Revibe
             </h1>
-
             <p className="text-lg mb-6">
               Discover amazing second-hand items at unbeatable prices. Shop
               sustainably and save big!
             </p>
-
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <Link href="/product">
+              <Link href="/products">
                 <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300 shadow-lg">
                   Shop Now
                 </button>
@@ -88,15 +87,75 @@ export default function Home() {
         />
       </div>
 
-      <section>
-        {" "}
+      <section className="container mx-auto py-12">
         <Categories />
       </section>
-      <section>
+
+      <section className="container mx-auto py-12">
         <FeaturedProducts products={products} />
       </section>
 
+      <div className="bg-yellow-500 text-white py-12">
+        <div className="container mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4">Flash Sale!</h2>
+          <p className="text-lg mb-6">
+            Get up to 50% off on selected items. Limited time only!
+          </p>
+          <Link href="/sale">
+            <button className="bg-white text-yellow-600 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-100 transition duration-300 shadow-lg">
+              Shop the Sale
+            </button>
+          </Link>
+        </div>
+      </div>
+
       <div className="bg-gray-100 py-12">
+        <div className="container mx-auto">
+          <h2 className="text-2xl font-bold mb-8 text-center">Tips & Guides</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: "How to Style Second-Hand Clothes",
+                image: "/images/blog1.jpg",
+                link: "/blog/style-tips",
+              },
+              {
+                title: "Top 5 Thrift Shopping Tips",
+                image: "/images/blog2.jpg",
+                link: "/blog/thrift-tips",
+              },
+              {
+                title: "Eco-Friendly Living Made Easy",
+                image: "/images/blog3.jpg",
+                link: "/blog/eco-friendly",
+              },
+            ].map((post, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold mt-2">{post.title}</h3>
+                <Link
+                  href={post.link}
+                  className="text-purple-600 hover:underline"
+                >
+                  Read More
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="bg-white py-12">
         <div className="container mx-auto">
           <h2 className="text-2xl font-bold mb-8 text-center">
             What Our Customers Say
@@ -124,7 +183,7 @@ export default function Home() {
             ].map((testimonial, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-md text-center"
+                className="bg-gray-100 p-6 rounded-lg shadow-md text-center"
               >
                 <span className="text-4xl mb-4">{testimonial.avatar}</span>
                 <p className="text-gray-600 mb-4">{testimonial.review}</p>

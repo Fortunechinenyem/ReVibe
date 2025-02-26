@@ -279,11 +279,11 @@ export default function Navbar({ user }) {
       >
         <Link
           href="/cart"
-          className="relative text-indigo-900 hover:text-purple-600 transition duration-300"
+          className="relative inline-block text-indigo-900 hover:text-purple-600 transition duration-300"
         >
-          <ShoppingCart size={24} />
+          <ShoppingCart size={24} className="w-6 h-6 md:w-8 md:h-8" />
           {cart.length > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+            <span className="absolute top-0 right-0 sm:-top-5 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
               {cart.length}
             </span>
           )}
@@ -308,13 +308,13 @@ export default function Navbar({ user }) {
           <>
             <button
               onClick={() => setShowLogin(true)}
-              className="w-full bg-purple-600 text-white px-6 py-2 rounded-lg text-center hover:bg-purple-500 transition duration-300 transform hover:scale-105 shadow-lg mt-2"
+              className="max-w-xs  w-auto bg-purple-600 text-white px-6 py-2 rounded-lg text-center hover:bg-purple-500 transition duration-300 transform hover:scale-105 shadow-lg mt-2 mx-auto block"
             >
               Login
             </button>
             <button
               onClick={() => setShowSignup(true)}
-              className="w-full bg-green-600 text-white px-6 py-2 rounded-lg text-center hover:bg-green-500 transition duration-300 transform hover:scale-105 shadow-lg mt-2"
+              className="max-w-xs w-auto  bg-green-600 text-white px-6 py-2 rounded-lg text-center hover:bg-green-500 transition duration-300 transform hover:scale-105 shadow-lg mt-2 mx-auto block"
             >
               Sign Up
             </button>
@@ -322,7 +322,6 @@ export default function Navbar({ user }) {
         )}
       </div>
 
-      {/* Login Modal */}
       {showLogin && (
         <Login
           onClose={() => setShowLogin(false)}
