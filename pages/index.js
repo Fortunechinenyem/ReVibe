@@ -51,7 +51,7 @@ export default function Home() {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <Link href="/products">
+              <Link href="/product">
                 <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300 shadow-lg">
                   Shop Now
                 </button>

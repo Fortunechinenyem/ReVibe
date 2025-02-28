@@ -10,6 +10,33 @@ const categories = [
   { name: "Furniture", icon: "🪑", color: "bg-yellow-500" },
   { name: "Books", icon: "📚", color: "bg-red-500" },
   { name: "Accessories", icon: "🕶️", color: "bg-purple-500" },
+  {
+    name: "Shoes",
+    icon: "👟",
+  },
+  {
+    name: "Bags",
+    icon: "👜",
+  },
+  {
+    name: "Jewelry",
+    icon: "💍",
+  },
+  {
+    name: "Home Decor",
+    icon: "🖼️",
+  },
+  { name: "Toys", icon: "🧸" },
+  {
+    name: "Sports Gear",
+    icon: "🏀",
+  },
+  { name: "Beauty", icon: "💄" },
+  { name: "Automotive", icon: "🚗" },
+  { name: "Health & Wellness", icon: "💊" },
+  { name: "Groceries", icon: "🛒" },
+  { name: "Pet Supplies", icon: "🐶" },
+  { name: "Music & Instruments", icon: "🎸" },
 ];
 
 export default function ProductsPage() {
