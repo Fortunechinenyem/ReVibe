@@ -146,17 +146,17 @@ export default function Home() {
             {[
               {
                 title: "How to Style Second-Hand Clothes",
-                image: "/images/blog1.jpg",
+                image: "/images/style-tips.jpg",
                 link: "/blog/style-tips",
               },
               {
                 title: "Top 5 Thrift Shopping Tips",
-                image: "/images/blog2.jpg",
+                image: "/images/thrift-tips.jpg",
                 link: "/blog/thrift-tips",
               },
               {
                 title: "Eco-Friendly Living Made Easy",
-                image: "/images/blog3.jpg",
+                image: "/images/eco-friendly.jpg",
                 link: "/blog/eco-friendly",
               },
             ].map((post, index) => (
