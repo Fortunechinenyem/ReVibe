@@ -3,13 +3,15 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Navbar from "@/app/components/Navbar";
 import Link from "next/link";
-import Categories from "@/app/components/Categories";
+
 import FeaturedProducts from "@/app/components/FeaturedProducts";
 import Footer from "@/app/components/Footer";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,8 +19,12 @@ export default function Home() {
         const response = await fetch("/api/products");
         const data = await response.json();
         setProducts(data);
-
         setTrendingProducts(data.slice(0, 4));
+
+        const uniqueCategories = [
+          ...new Set(data.map((product) => product.category)),
+        ];
+        setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -87,9 +93,33 @@ export default function Home() {
         />
       </div>
 
-      <section className="container mx-auto py-12">
-        <Categories />
-      </section>
+      <div className="relative container mx-auto py-4 px-6">
+        <button
+          className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        >
+          Browse Categories ▼
+        </button>
+
+        {isDropdownOpen && (
+          <ul className="absolute mt-2 bg-white border rounded-lg shadow-lg w-48 z-10">
+            {categories.length > 0 ? (
+              categories.map((category, index) => (
+                <li key={index} className="border-b last:border-none">
+                  <Link
+                    href={`/categories/${category.toLowerCase()}`}
+                    className="block px-4 py-2 text-gray-700 hover:bg-purple-100"
+                  >
+                    {category}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="px-4 py-2 text-gray-500">No categories found</li>
+            )}
+          </ul>
+        )}
+      </div>
 
       <section className="container mx-auto py-12">
         <FeaturedProducts products={products} />
