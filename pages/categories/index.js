@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Categories() {
   const categories = [
@@ -47,18 +48,46 @@ export default function Categories() {
       icon: "🖼️",
       description: "Beautiful decor to spruce up your space.",
     },
-    { name: "Toys", icon: "🧸", description: "Fun and safe toys for kids." },
+    {
+      name: "Toys",
+      icon: "🧸",
+      description: "Fun and safe toys for kids.",
+    },
     {
       name: "Sports Gear",
       icon: "🏀",
       description: "Equipment for your favorite sports.",
     },
-    { name: "Beauty", icon: "💄", description: "Gently used beauty products." },
-    { name: "Automotive", icon: "🚗" },
-    { name: "Health & Wellness", icon: "💊" },
-    { name: "Groceries", icon: "🛒" },
-    { name: "Pet Supplies", icon: "🐶" },
-    { name: "Music & Instruments", icon: "🎸" },
+    {
+      name: "Beauty",
+      icon: "💄",
+      description: "Gently used beauty products.",
+    },
+    {
+      name: "Automotive",
+      icon: "🚗",
+      description: "Affordable car parts and accessories.",
+    },
+    {
+      name: "Health & Wellness",
+      icon: "💊",
+      description: "Products to support your health and well-being.",
+    },
+    {
+      name: "Groceries",
+      icon: "🛒",
+      description: "Everyday essentials at great prices.",
+    },
+    {
+      name: "Pet Supplies",
+      icon: "🐶",
+      description: "Everything you need for your furry friends.",
+    },
+    {
+      name: "Music & Instruments",
+      icon: "🎸",
+      description: "Pre-loved musical instruments and gear.",
+    },
   ];
 
   return (
@@ -69,16 +98,22 @@ export default function Categories() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {categories.map((category, index) => (
-          <motion.div
+          <Link
             key={index}
-            className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg text-center hover:shadow-2xl transition duration-300 cursor-pointer border border-white/40"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            href={`/categories/${category.name
+              .toLowerCase()
+              .replace(/ /g, "-")}`}
           >
-            <div className="text-5xl mb-4">{category.icon}</div>
-            <h3 className="text-lg font-semibold mb-2">{category.name}</h3>
-            <p className="text-sm text-gray-600">{category.description}</p>
-          </motion.div>
+            <motion.div
+              className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg text-center hover:shadow-2xl transition duration-300 cursor-pointer border border-white/40"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="text-5xl mb-4">{category.icon}</div>
+              <h3 className="text-lg font-semibold mb-2">{category.name}</h3>
+              <p className="text-sm text-gray-600">{category.description}</p>
+            </motion.div>
+          </Link>
         ))}
       </div>
     </div>

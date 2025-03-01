@@ -45,7 +45,7 @@
     "description": "A gently used novel by a popular Nigerian author.",
     "price": 2000,
     "category": "Books",
-    "imageUrl": "/uploads/nigerian_novel.jpg"
+    "imageUrl": "/uploads/nigerian_novel.JPG"
   },
   {
     "id": 7,
@@ -93,7 +93,7 @@
     "description": "A collection of used textbooks for students.",
     "price": 5000,
     "category": "Books",
-    "imageUrl": "/uploads/textbooks.jpg"
+    "imageUrl": "/uploads/textbooks.JPG"
   },
   {
     "id": 13,
@@ -109,7 +109,7 @@
     "description": "A functional microwave oven for quick and easy cooking.",
     "price": 30000,
     "category": "Electronics",
-    "imageUrl": "/uploads/microwave.jpg"
+    "imageUrl": "/uploads/microwave.JPG"
   },
   {
     "id": 15,
@@ -118,5 +118,93 @@
     "price": 40000,
     "category": "Furniture",
     "imageUrl": "/uploads/bookshelf.jpg"
+  },
+  {
+    "id": 16,
+    "name": "Leather Handbag",
+    "description": "A stylish and durable leather handbag, perfect for any occasion.",
+    "price": 18000,
+    "category": "Bags",
+    "imageUrl": "/uploads/leather_handbag.jpg"
+  },
+  {
+    "id": 17,
+    "name": "Gold-Plated Earrings",
+    "description": "Elegant gold-plated earrings to complement your look.",
+    "price": 7000,
+    "category": "Jewelry",
+    "imageUrl": "/uploads/gold_earrings.jpg"
+  },
+  {
+    "id": 18,
+    "name": "Wall Art Painting",
+    "description": "A beautiful and colorful painting to decorate your home.",
+    "price": 25000,
+    "category": "Home Decor",
+    "imageUrl": "/uploads/wall_painting.jpg"
+  },
+  {
+    "id": 19,
+    "name": "Teddy Bear Plush Toy",
+    "description": "A soft and cuddly teddy bear for kids.",
+    "price": 5000,
+    "category": "Toys",
+    "imageUrl": "/uploads/teddy_bear.jpg"
+  },
+  {
+    "id": 20,
+    "name": "Basketball",
+    "description": "A durable basketball, perfect for outdoor and indoor play.",
+    "price": 10000,
+    "category": "Sports Gear",
+    "imageUrl": "/uploads/basketball.jpg"
+  },
+  {
+    "id": 21,
+    "name": "Makeup Kit",
+    "description": "A complete set of essential makeup items for everyday use.",
+    "price": 15000,
+    "category": "Beauty",
+    "imageUrl": "/uploads/makeup_kit.jpg"
+  },
+  {
+    "id": 22,
+    "name": "Car Phone Holder",
+    "description": "A sturdy and adjustable phone holder for your car.",
+    "price": 5000,
+    "category": "Automotive",
+    "imageUrl": "/uploads/car_phone_holder.jpg"
+  },
+  {
+    "id": 23,
+    "name": "Vitamin C Supplements",
+    "description": "Boost your immune system with high-quality vitamin C tablets.",
+    "price": 8000,
+    "category": "Health & Wellness",
+    "imageUrl": "/uploads/vitamin_c.jpg"
+  },
+  {
+    "id": 24,
+    "name": "Organic Rice (5kg)",
+    "description": "Locally sourced, high-quality organic rice.",
+    "price": 12000,
+    "category": "Groceries",
+    "imageUrl": "/uploads/organic_rice.jpg"
+  },
+  {
+    "id": 25,
+    "name": "Dog Food (10kg)",
+    "description": "Nutritious dry food for dogs of all breeds.",
+    "price": 15000,
+    "category": "Pet Supplies",
+    "imageUrl": "/uploads/dog_food.jpg"
+  },
+  {
+    "id": 26,
+    "name": "Acoustic Guitar",
+    "description": "A high-quality acoustic guitar for beginners and professionals.",
+    "price": 45000,
+    "category": "Music & Instruments",
+    "imageUrl": "/uploads/acoustic_guitar.jpg"
   }
 ]

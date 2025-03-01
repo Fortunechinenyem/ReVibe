@@ -1,42 +1,49 @@
-import Navbar from "@/app/components/Navbar";
-import ProductCard from "@/app/components/ProductCard";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+
+import Link from "next/link";
+
+import {
+  FaTshirt,
+  FaMobileAlt,
+  FaCouch,
+  FaBook,
+  FaGlasses,
+  FaShoePrints,
+  FaRing,
+  FaPaintRoller,
+  FaBabyCarriage,
+  FaBasketballBall,
+  FaSmile,
+  FaCar,
+  FaHeartbeat,
+  FaShoppingCart,
+  FaPaw,
+  FaMusic,
+} from "react-icons/fa";
+import { FaBagShopping } from "react-icons/fa6";
+import Navbar from "@/app/components/Navbar";
+import ProductCard from "@/app/components/ProductCard";
 import Footer from "@/app/components/Footer";
 
 const categories = [
-  { name: "Clothing", icon: "👕", color: "bg-blue-500" },
-  { name: "Electronics", icon: "📱", color: "bg-green-500" },
-  { name: "Furniture", icon: "🪑", color: "bg-yellow-500" },
-  { name: "Books", icon: "📚", color: "bg-red-500" },
-  { name: "Accessories", icon: "🕶️", color: "bg-purple-500" },
-  {
-    name: "Shoes",
-    icon: "👟",
-  },
-  {
-    name: "Bags",
-    icon: "👜",
-  },
-  {
-    name: "Jewelry",
-    icon: "💍",
-  },
-  {
-    name: "Home Decor",
-    icon: "🖼️",
-  },
-  { name: "Toys", icon: "🧸" },
-  {
-    name: "Sports Gear",
-    icon: "🏀",
-  },
-  { name: "Beauty", icon: "💄" },
-  { name: "Automotive", icon: "🚗" },
-  { name: "Health & Wellness", icon: "💊" },
-  { name: "Groceries", icon: "🛒" },
-  { name: "Pet Supplies", icon: "🐶" },
-  { name: "Music & Instruments", icon: "🎸" },
+  { name: "Clothing", icon: <FaTshirt /> },
+  { name: "Electronics", icon: <FaMobileAlt /> },
+  { name: "Furniture", icon: <FaCouch /> },
+  { name: "Books", icon: <FaBook /> },
+  { name: "Accessories", icon: <FaGlasses /> },
+  { name: "Shoes", icon: <FaShoePrints /> },
+  { name: "Bags", icon: <FaBagShopping /> },
+  { name: "Jewelry", icon: <FaRing /> },
+  { name: "Home Decor", icon: <FaPaintRoller /> },
+  { name: "Toys", icon: <FaBabyCarriage /> },
+  { name: "Sports Gear", icon: <FaBasketballBall /> },
+  { name: "Beauty", icon: <FaSmile /> },
+  { name: "Automotive", icon: <FaCar /> },
+  { name: "Health & Wellness", icon: <FaHeartbeat /> },
+  { name: "Groceries", icon: <FaShoppingCart /> },
+  { name: "Pet Supplies", icon: <FaPaw /> },
+  { name: "Music & Instruments", icon: <FaMusic /> },
 ];
 
 export default function ProductsPage() {
@@ -55,7 +62,6 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  // Group products by category
   const productsByCategory = products.reduce((acc, product) => {
     if (!acc[product.category]) {
       acc[product.category] = [];
@@ -99,12 +105,17 @@ export default function ProductsPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <span
-                  className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${category.color} mr-2`}
+                <Link
+                  href={`/categories/${category.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}`}
+                  className="flex items-center text-indigo-600 hover:underline"
                 >
-                  {category.icon}
-                </span>
-                {category.name}
+                  <span className="w-10 h-10 flex items-center justify-center rounded-full bg-indigo-500 text-white mr-2">
+                    {category.icon}
+                  </span>
+                  {category.name}
+                </Link>
               </motion.h2>
 
               {productsInCategory.length > 0 ? (
@@ -118,7 +129,6 @@ export default function ProductsPage() {
                     <motion.div
                       key={product.id}
                       whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
                       transition={{ duration: 0.3 }}
                     >
                       <ProductCard product={product} />

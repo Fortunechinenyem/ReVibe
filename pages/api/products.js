@@ -70,7 +70,17 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     try {
+      const { category } = req.query;
       const products = readProducts();
+
+      if (category) {
+        const filteredProducts = products.filter(
+          (product) =>
+            typeof product.category === "string" &&
+            product.category.toLowerCase() === category.toLowerCase()
+        );
+        return res.status(200).json(filteredProducts);
+      }
 
       res.status(200).json(products);
     } catch (error) {
