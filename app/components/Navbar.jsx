@@ -279,9 +279,9 @@ export default function Navbar({ user }) {
       >
         <Link
           href="/cart"
-          className="relative inline-block text-indigo-900 hover:text-purple-600 transition duration-300"
+          className="relative inline-block  text-indigo-900 hover:text-purple-600 transition duration-300"
         >
-          <ShoppingCart size={24} className="w-6 h-6 md:w-8 md:h-8" />
+          <ShoppingCart size={24} className=" w-6 h-6 md:w-8 md:h-8" />
           {cart.length > 0 && (
             <span className="absolute top-0 right-0 sm:-top-5 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
               {cart.length}
