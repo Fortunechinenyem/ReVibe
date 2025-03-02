@@ -53,7 +53,7 @@ export default function ProductPage() {
             <p className="text-gray-600 text-2xl">₦{product.price}</p>
             <p className="text-gray-500 mt-4">{product.description}</p>
             <button
-              className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+              className="bg-purple-600 text-white px-6 py-2 rounded-lg text-center hover:bg-purple-500 transition duration-300 transform hover:scale-105 shadow-lg"
               onClick={() => addToCart(product)}
             >
               Add to Cart

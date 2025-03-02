@@ -74,12 +74,12 @@ export default function CartPage() {
               </div>
             ))}
 
-            <div className="border-t pt-4 mt-6">
+            <div className="border-t text-center pt-4 mt-6 mb-5">
               <h2 className="text-2xl font-semibold">
                 Total: ₦{totalPrice.toLocaleString()}
               </h2>
               <button
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500 mt-4"
+                className="bg-purple-600 text-white px-6 py-2 rounded-lg text-center hover:bg-purple-500 transition duration-300 transform hover:scale-105 shadow-lg mt-4"
                 onClick={() => router.push("/checkout")}
               >
                 Checkout

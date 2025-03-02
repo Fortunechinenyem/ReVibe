@@ -273,21 +273,23 @@ export default function Navbar({ user }) {
       </div>
 
       <div
-        className={`md:hidden bg-white px-6 py-4 transition-all duration-300 ease-in-out ${
+        className={`md:hidden mt-7 bg-white px-6 py-4 transition-all duration-300 ease-in-out ${
           isMenuOpen ? "block" : "hidden"
         }`}
       >
-        <Link
-          href="/cart"
-          className="relative inline-block  text-indigo-900 hover:text-purple-600 transition duration-300"
-        >
-          <ShoppingCart size={24} className=" w-6 h-6 md:w-8 md:h-8" />
-          {cart.length > 0 && (
-            <span className="absolute top-0 right-0 sm:-top-5 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-              {cart.length}
-            </span>
-          )}
-        </Link>
+        <div className="text-center">
+          <Link
+            href="/cart"
+            className="relative inline-block  text-indigo-900 hover:text-purple-600 transition duration-300"
+          >
+            <ShoppingCart size={24} className=" w-6 h-6 md:w-8 md:h-8" />
+            {cart.length > 0 && (
+              <span className="absolute top-0 right-0 sm:-top-5 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                {cart.length}
+              </span>
+            )}
+          </Link>
+        </div>
 
         {user ? (
           <>

@@ -6,7 +6,7 @@ import { useState } from "react";
 import Footer from "@/app/components/Footer";
 
 export default function Checkout() {
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -38,9 +38,15 @@ export default function Checkout() {
       return;
     }
 
-    alert("Payment successful! Your order has been placed.");
-    clearCart();
-    router.push("/");
+    // Redirect to the payment page with cart and form data
+    router.push({
+      pathname: "/payment",
+      query: {
+        cart: JSON.stringify(cart),
+        totalPrice: totalPrice,
+        ...form, // Pass form data as query parameters
+      },
+    });
   };
 
   return (
@@ -129,7 +135,7 @@ export default function Checkout() {
               </div>
 
               <button
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 mt-4"
+                className="w-full bg-purple-600 text-white px-6 py-2 rounded-lg text-center hover:bg-purple-500 transition duration-300 transform hover:scale-105 shadow-lg mt-4"
                 onClick={handleCheckout}
               >
                 Pay Now

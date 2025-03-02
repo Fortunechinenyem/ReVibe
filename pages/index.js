@@ -95,7 +95,7 @@ export default function Home() {
 
       <div className="relative container mx-auto py-4 px-6">
         <button
-          className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300"
+          className="bg-purple-600 text-white px-6 py-2 rounded-lg text-center hover:bg-purple-500 transition duration-300 transform hover:scale-105 shadow-lg font-semibold hover:bg-purple-700 transition duration-300"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           Browse Categories ▼
