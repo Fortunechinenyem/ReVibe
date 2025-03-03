@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 import Link from "next/link";
 
@@ -25,6 +26,7 @@ import { FaBagShopping } from "react-icons/fa6";
 import Navbar from "@/app/components/Navbar";
 import ProductCard from "@/app/components/ProductCard";
 import Footer from "@/app/components/Footer";
+import { db } from "@/lib/firebase";
 
 const categories = [
   { name: "Clothing", icon: <FaTshirt /> },
@@ -46,8 +48,33 @@ const categories = [
   { name: "Music & Instruments", icon: <FaMusic /> },
 ];
 
-export default function ProductsPage() {
+export default function ProductsPage({ productId }) {
   const [products, setProducts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const q = query(
+        collection(db, "reviews"),
+        where("productId", "==", productId),
+        where("approved", "==", true)
+      );
+      const querySnapshot = await getDocs(q);
+      const reviewsData = querySnapshot.docs.map((doc) => doc.data());
+      setReviews(reviewsData);
+
+      if (reviewsData.length > 0) {
+        const totalRating = reviewsData.reduce(
+          (sum, review) => sum + review.rating,
+          0
+        );
+        setAverageRating((totalRating / reviewsData.length).toFixed(1));
+      }
+    };
+
+    fetchReviews();
+  }, [productId]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -141,6 +168,27 @@ export default function ProductsPage() {
             </div>
           );
         })}
+      </div>
+      <div className="mt-6">
+        <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
+        <div className="mb-4">
+          <span className="text-lg font-semibold">Average Rating:</span>
+          <span className="ml-2">{averageRating} / 5</span>
+        </div>
+        {reviews.length === 0 ? (
+          <p>No reviews yet. Be the first to leave one!</p>
+        ) : (
+          reviews.map((review, index) => (
+            <div key={index} className="mb-4 p-4 border rounded-lg">
+              <div className="flex items-center mb-2">
+                <span className="font-semibold">
+                  Rating: {review.rating} Stars
+                </span>
+              </div>
+              <p className="text-gray-700">{review.comment}</p>
+            </div>
+          ))
+        )}
       </div>
       <Footer />
     </div>
