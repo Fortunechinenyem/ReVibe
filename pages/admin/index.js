@@ -9,51 +9,61 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/app/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
+import { Button } from "@/app/components/ui/Button";
+
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
-
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("/api/products");
-      const data = await res.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      const querySnapshot = await getDocs(collection(db, "reviews"));
-      const reviewsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setReviews(reviewsData);
-    };
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        setProducts(data);
 
-    fetchReviews();
+        const querySnapshot = await getDocs(collection(db, "reviews"));
+        const reviewsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setReviews(reviewsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const handleDeleteProduct = async (id) => {
     try {
-      const res = await fetch(`/api/products/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete product");
+      await fetch(`/api/products/${id}`, { method: "DELETE" });
       setProducts((prev) => prev.filter((product) => product.id !== id));
     } catch (error) {
       console.error("Error deleting product:", error);
     }
   };
 
-  const handleApproveReview = async () => {
+  const handleApproveReview = async (reviewId) => {
     try {
-      await updateDoc(doc(db, "reviews", reviewId), {
-        approved: true,
-      });
-      alert("Review approved!");
+      await updateDoc(doc(db, "reviews", reviewId), { approved: true });
       setReviews((prev) =>
         prev.map((review) =>
           review.id === reviewId ? { ...review, approved: true } : review
@@ -61,77 +71,108 @@ export default function AdminPage() {
       );
     } catch (error) {
       console.error("Error approving review:", error);
-      alert("An error occurred. Please try again.");
     }
   };
 
   const handleDeleteReview = async (reviewId) => {
     try {
       await deleteDoc(doc(db, "reviews", reviewId));
-      alert("Review deleted!");
       setReviews((prev) => prev.filter((review) => review.id !== reviewId));
     } catch (error) {
       console.error("Error deleting review:", error);
-      alert("An error occurred. Please try again.");
     }
   };
 
+  if (loading) return <p className="text-center">Loading...</p>;
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-      <ProductForm onSuccess={fetchProducts} />
+    <div className="p-6 space-y-8">
+      <h1 className="text-3xl font-bold text-center">Admin Dashboard</h1>
+      <ProductForm onSuccess={() => fetchProducts()} />
 
-      <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4">Manage Products</h2>
-        <div className="space-y-4">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md"
-            >
-              <div>
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-sm text-gray-600">{product.description}</p>
-                <p className="text-sm text-gray-600">N{product.price}</p>
-              </div>
-              <button
-                onClick={() => handleDeleteProduct(product.id)}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300"
-              >
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Products</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.description}</TableCell>
+                  <TableCell>N{product.price}</TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => handleDeleteProduct(product.id)}
+                      variant="destructive"
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Review Moderation</h1>
-        {reviews.map((review) => (
-          <div key={review.id} className="mb-4 p-4 border rounded-lg">
-            <div className="flex items-center mb-2">
-              <span className="font-semibold">
-                Rating: {review.rating} Stars
-              </span>
-              {!review.approved && (
-                <button
-                  onClick={() => handleApproveReview(review.id)}
-                  className="ml-4 bg-green-600 text-white py-1 px-3 rounded-lg hover:bg-green-500"
-                >
-                  Approve
-                </button>
-              )}
-              <button
-                onClick={() => handleDeleteReview(review.id)}
-                className="ml-4 bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-500"
-              >
-                Delete
-              </button>
-            </div>
-            <p className="text-gray-700">{review.comment}</p>
-          </div>
-        ))}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Review Moderation</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Rating</TableHead>
+                <TableHead>Comment</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {reviews.map((review) => (
+                <TableRow key={review.id}>
+                  <TableCell>{review.rating} ⭐</TableCell>
+                  <TableCell>{review.comment}</TableCell>
+                  <TableCell>
+                    {review.approved ? (
+                      <span className="text-green-600">Approved</span>
+                    ) : (
+                      <span className="text-yellow-600">Pending</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {!review.approved && (
+                      <Button
+                        onClick={() => handleApproveReview(review.id)}
+                        className="mr-2"
+                      >
+                        Approve
+                      </Button>
+                    )}
+                    <Button
+                      onClick={() => handleDeleteReview(review.id)}
+                      variant="destructive"
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }
