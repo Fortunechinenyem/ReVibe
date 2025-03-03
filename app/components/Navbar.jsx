@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { auth } from "@/lib/firebase";
+import { auth, loginUser } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";

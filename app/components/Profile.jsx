@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
 import { updateProfile } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, storage } from "@/lib/firebase";
 import { useRouter } from "next/router";
-import { auth } from "@/lib/firebase";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function ProfileComponent({ user }) {
   const [displayName, setDisplayName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
+  const [bio, setBio] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,18 +25,40 @@ export default function ProfileComponent({ user }) {
     }
   }, [user]);
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPhotoURL(URL.createObjectURL(selectedFile));
+    }
+  };
+
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
+
     try {
+      let newPhotoURL = photoURL;
+
+      if (file) {
+        const storageRef = ref(storage, `profile-pictures/${user.uid}`);
+        await uploadBytes(storageRef, file);
+        newPhotoURL = await getDownloadURL(storageRef);
+      }
+
       await updateProfile(auth.currentUser, {
         displayName,
-        photoURL,
+        photoURL: newPhotoURL,
       });
+
       setMessage("Profile updated successfully!");
+      setPhotoURL(newPhotoURL);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,26 +104,56 @@ export default function ProfileComponent({ user }) {
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">
-                Photo URL
+                Profile Picture
               </label>
               <input
-                type="url"
-                value={photoURL}
-                onChange={(e) => setPhotoURL(e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter a photo URL"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Bio</label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Tell us about yourself"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your phone number"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Address</label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your address"
               />
             </div>
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             >
-              Update Profile
+              {loading ? "Updating..." : "Update Profile"}
             </button>
           </form>
         </div>
 
-        {/* Additional Profile Information */}
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Account Details</h2>
           <div className="space-y-2">
@@ -112,6 +171,7 @@ export default function ProfileComponent({ user }) {
           </div>
         </div>
 
+        {/* Logout Button */}
         <div className="mt-8">
           <button
             onClick={async () => {
