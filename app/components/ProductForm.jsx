@@ -49,7 +49,7 @@ export default function ProductForm() {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Add a New Product</h2>
+      <h2 className="text-xl font-bold mb-6">Add a New Product</h2>
       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
       {message && <p className="text-green-500 text-sm mb-4">{message}</p>}
       <form onSubmit={handleSubmit}>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import ProductForm from "@/app/components/ProductForm";
 import {
   collection,
   getDocs,
@@ -8,62 +7,68 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/app/components/ui/table";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/Button";
+import ProductForm from "@/app/components/ProductForm";
+import { FaTrash, FaCheck, FaTimes } from "react-icons/fa"; // Icons for actions
+import ConfirmationDialog from "@/app/components/ConfirmationDialog"; // Custom confirmation dialog
+import Navbar from "@/app/components/Navbar";
 
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [actionType, setActionType] = useState(""); // "deleteProduct", "deleteReview", "approveReview"
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "reviews"));
+      const reviewsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setReviews(reviewsData);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-        setProducts(data);
-
-        const querySnapshot = await getDocs(collection(db, "reviews"));
-        const reviewsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setReviews(reviewsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    fetchProducts();
+    fetchReviews();
   }, []);
 
   const handleDeleteProduct = async (id) => {
     try {
-      await fetch(`/api/products/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete product");
       setProducts((prev) => prev.filter((product) => product.id !== id));
     } catch (error) {
       console.error("Error deleting product:", error);
+    } finally {
+      setShowConfirmation(false);
     }
   };
 
   const handleApproveReview = async (reviewId) => {
     try {
-      await updateDoc(doc(db, "reviews", reviewId), { approved: true });
+      await updateDoc(doc(db, "reviews", reviewId), {
+        approved: true,
+      });
       setReviews((prev) =>
         prev.map((review) =>
           review.id === reviewId ? { ...review, approved: true } : review
@@ -71,6 +76,8 @@ export default function AdminPage() {
       );
     } catch (error) {
       console.error("Error approving review:", error);
+    } finally {
+      setShowConfirmation(false);
     }
   };
 
@@ -80,99 +87,151 @@ export default function AdminPage() {
       setReviews((prev) => prev.filter((review) => review.id !== reviewId));
     } catch (error) {
       console.error("Error deleting review:", error);
+    } finally {
+      setShowConfirmation(false);
     }
   };
 
-  if (loading) return <p className="text-center">Loading...</p>;
+  const openConfirmation = (type, id) => {
+    setActionType(type);
+    setSelectedReview(id);
+    setShowConfirmation(true);
+  };
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false);
+    setSelectedReview(null);
+  };
+
+  const confirmAction = () => {
+    if (actionType === "deleteProduct") {
+      handleDeleteProduct(selectedReview);
+    } else if (actionType === "deleteReview") {
+      handleDeleteReview(selectedReview);
+    } else if (actionType === "approveReview") {
+      handleApproveReview(selectedReview);
+    }
+  };
+
+  const pendingReviews = reviews.filter((review) => !review.approved);
+  const approvedReviews = reviews.filter((review) => review.approved);
 
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-3xl font-bold text-center">Admin Dashboard</h1>
-      <ProductForm onSuccess={() => fetchProducts()} />
+    <>
+      <Navbar />
+      <div className="p-6 py-20 bg-gray-100 min-h-screen">
+        <h1 className="text-2xl text-center font-bold mb-6">Admin Dashboard</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Manage Products</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h2 className="text-xl text-center font-bold mb-4">
+            Manage Products
+          </h2>
+          <ProductForm onSuccess={fetchProducts} />
+
+          {loading ? (
+            <p>Loading products...</p>
+          ) : (
+            <div className="space-y-4 mt-4">
               {products.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.description}</TableCell>
-                  <TableCell>N{product.price}</TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => handleDeleteProduct(product.id)}
-                      variant="destructive"
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold">{product.name}</h3>
+                    <p className="text-sm text-gray-600">
+                      {product.description}
+                    </p>
+                    <p className="text-sm text-gray-600">₦{product.price}</p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      openConfirmation("deleteProduct", product.id)
+                    }
+                    className="text-red-600 hover:text-red-800 transition duration-300"
+                  >
+                    <FaTrash className="w-5 h-5" />
+                  </button>
+                </div>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </div>
+          )}
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Review Moderation</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Rating</TableHead>
-                <TableHead>Comment</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {reviews.map((review) => (
-                <TableRow key={review.id}>
-                  <TableCell>{review.rating} ⭐</TableCell>
-                  <TableCell>{review.comment}</TableCell>
-                  <TableCell>
-                    {review.approved ? (
-                      <span className="text-green-600">Approved</span>
-                    ) : (
-                      <span className="text-yellow-600">Pending</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {!review.approved && (
-                      <Button
-                        onClick={() => handleApproveReview(review.id)}
-                        className="mr-2"
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4">Review Moderation</h2>
+
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold mb-4">Pending Approval</h3>
+            {pendingReviews.length === 0 ? (
+              <p className="text-gray-600">No pending reviews.</p>
+            ) : (
+              pendingReviews.map((review) => (
+                <div key={review.id} className="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold">
+                      Rating: {review.rating} Stars
+                    </span>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() =>
+                          openConfirmation("approveReview", review.id)
+                        }
+                        className="text-green-600 hover:text-green-800 transition duration-300"
                       >
-                        Approve
-                      </Button>
-                    )}
-                    <Button
-                      onClick={() => handleDeleteReview(review.id)}
-                      variant="destructive"
+                        <FaCheck className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() =>
+                          openConfirmation("deleteReview", review.id)
+                        }
+                        className="text-red-600 hover:text-red-800 transition duration-300"
+                      >
+                        <FaTimes className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">{review.comment}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Approved Reviews</h3>
+            {approvedReviews.length === 0 ? (
+              <p className="text-gray-600">No approved reviews.</p>
+            ) : (
+              approvedReviews.map((review) => (
+                <div key={review.id} className="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold">
+                      Rating: {review.rating} Stars
+                    </span>
+                    <button
+                      onClick={() =>
+                        openConfirmation("deleteReview", review.id)
+                      }
+                      className="text-red-600 hover:text-red-800 transition duration-300"
                     >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+                      <FaTrash className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <p className="text-gray-700">{review.comment}</p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <ConfirmationDialog
+          isOpen={showConfirmation}
+          onClose={closeConfirmation}
+          onConfirm={confirmAction}
+          title="Confirm Action"
+          message="Are you sure you want to perform this action?"
+        />
+      </div>
+    </>
   );
 }

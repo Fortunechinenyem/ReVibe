@@ -4,7 +4,6 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, storage } from "@/lib/firebase";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export default function ProfileComponent({ user }) {
   const [displayName, setDisplayName] = useState("");
@@ -77,7 +76,7 @@ export default function ProfileComponent({ user }) {
               className="rounded-full object-cover"
             />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 text-center md:text-left">
             <h2 className="text-2xl font-semibold">
               {displayName || "Anonymous"}
             </h2>
@@ -147,7 +146,7 @@ export default function ProfileComponent({ user }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+              className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition duration-300"
             >
               {loading ? "Updating..." : "Update Profile"}
             </button>
@@ -171,7 +170,6 @@ export default function ProfileComponent({ user }) {
           </div>
         </div>
 
-        {/* Logout Button */}
         <div className="mt-8">
           <button
             onClick={async () => {
