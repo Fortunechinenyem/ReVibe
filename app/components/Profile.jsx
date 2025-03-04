@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateProfile } from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth, storage } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
@@ -42,9 +41,20 @@ export default function ProfileComponent({ user }) {
       let newPhotoURL = photoURL;
 
       if (file) {
-        const storageRef = ref(storage, `profile-pictures/${user.uid}`);
-        await uploadBytes(storageRef, file);
-        newPhotoURL = await getDownloadURL(storageRef);
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const response = await fetch("/api/upload-profile-image", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to upload image");
+        }
+
+        const data = await response.json();
+        newPhotoURL = data.imageUrl;
       }
 
       await updateProfile(auth.currentUser, {
@@ -64,10 +74,12 @@ export default function ProfileComponent({ user }) {
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-center mb-6">Your Profile</h1>
+        <h1 className="text-3xl mt-7 font-bold text-center mb-6">
+          Your Profile
+        </h1>
 
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-6">
-          <div className="w-32 h-32 relative">
+          <div className="w-32 h-32 mb-5  relative">
             <Image
               src={photoURL || "/default-avatar.jpg"}
               alt="Profile Picture"
