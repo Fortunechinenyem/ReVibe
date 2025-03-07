@@ -5,12 +5,21 @@ import path from "path";
 const productsFilePath = path.join(process.cwd(), "data", "products.json");
 
 const readProducts = () => {
-  const fileData = fs.readFileSync(productsFilePath);
-  return JSON.parse(fileData);
+  try {
+    const fileData = fs.readFileSync(productsFilePath, "utf-8");
+    return JSON.parse(fileData);
+  } catch (error) {
+    console.error("Error reading products file:", error);
+    return [];
+  }
 };
 
 const writeProducts = (products) => {
-  fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
+  try {
+    fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
+  } catch (error) {
+    console.error("Error writing products file:", error);
+  }
 };
 
 export const config = {
@@ -22,9 +31,10 @@ export const config = {
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const form = new formidable.IncomingForm();
-      form.uploadDir = "./public/uploads";
-      form.keepExtensions = true;
+      const form = new formidable.IncomingForm({
+        uploadDir: path.join(process.cwd(), "public/uploads"),
+        keepExtensions: true,
+      });
 
       form.parse(req, async (err, fields, files) => {
         if (err) {
@@ -34,7 +44,7 @@ export default async function handler(req, res) {
 
         const { name, description, price, category } = fields;
 
-        if (!files.image) {
+        if (!files.image || !files.image.filepath) {
           return res.status(400).json({ message: "Image file is missing" });
         }
 
@@ -46,15 +56,14 @@ export default async function handler(req, res) {
 
         const newProduct = {
           id: products.length + 1,
-          name,
-          description,
-          price: parseFloat(price),
-          category,
+          name: name?.toString().trim() || "Untitled",
+          description: description?.toString().trim() || "No description",
+          price: parseFloat(price) || 0,
+          category: category?.toString().trim() || "Uncategorized",
           imageUrl,
         };
 
         products.push(newProduct);
-
         writeProducts(products);
 
         res.status(201).json({
@@ -73,16 +82,15 @@ export default async function handler(req, res) {
       const { category } = req.query;
       const products = readProducts();
 
-      if (category) {
-        const filteredProducts = products.filter(
-          (product) =>
-            typeof product.category === "string" &&
-            product.category.toLowerCase() === category.toLowerCase()
-        );
-        return res.status(200).json(filteredProducts);
-      }
+      const filteredProducts = category
+        ? products.filter(
+            (product) =>
+              typeof product.category === "string" &&
+              product.category.toLowerCase() === category.toLowerCase()
+          )
+        : products;
 
-      res.status(200).json(products);
+      res.status(200).json(filteredProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
       res

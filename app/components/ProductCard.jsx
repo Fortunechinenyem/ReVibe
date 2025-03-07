@@ -9,16 +9,22 @@ export default function ProductCard({ product }) {
           <Image
             src={product.imageUrl}
             alt={product.name}
-            layout="fill"
-            objectFit="cover"
+            width={300}
+            height={200}
+            className="w-full h-48 object-cover"
           />
         </div>
         <div className="p-4">
           <h3 className="font-semibold text-lg">{product.name}</h3>
           <p className="text-gray-600">₦{product.price}</p>
           <p className="text-sm text-gray-500">{product.description}</p>
+          <p className="text-gray-500 mb-2">{product.category}</p>
         </div>
-        <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-100 transition duration-300">
+        <div className="flex items-center mb-4">
+          <span className="text-yellow-500">★</span>
+          <span className="ml-1">{product.rating}</span>
+        </div>
+        <button className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
           View
         </button>
       </Link>

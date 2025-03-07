@@ -92,7 +92,7 @@ export default function Footer() {
                 placeholder="Enter your email"
                 className="w-full p-2 text-gray-900 rounded-l-md focus:outline-none"
               />
-              <button className="bg-blue-500 px-4 py-2 rounded-r-md hover:bg-blue-600">
+              <button className="bg-purple-600 px-4 py-2 rounded-r-md hover:bg-blue-600">
                 Subscribe
               </button>
             </div>

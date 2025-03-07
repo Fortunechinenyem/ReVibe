@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { collection, query, where, getDocs } from "firebase/firestore";
-
+import { useRouter } from "next/router";
 import Link from "next/link";
 
 import {
@@ -49,11 +49,22 @@ const categories = [
 ];
 
 export default function ProductsPage({ productId }) {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    rating: "",
+  });
+  const [sortOption, setSortOption] = useState("");
 
   useEffect(() => {
+    if (!productId) return;
     const fetchReviews = async () => {
       const q = query(
         collection(db, "reviews"),
@@ -77,19 +88,75 @@ export default function ProductsPage({ productId }) {
   }, [productId]);
 
   useEffect(() => {
-    async function fetchProducts() {
+    const fetchProducts = async () => {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
         setProducts(data);
+        setFilteredProducts(data);
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Error fetching products:", error);
       }
-    }
+    };
+
     fetchProducts();
   }, []);
 
-  const productsByCategory = products.reduce((acc, product) => {
+  useEffect(() => {
+    let result = [...products];
+
+    if (searchQuery) {
+      result = result.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (filters.category) {
+      result = result.filter(
+        (product) => product.category === filters.category
+      );
+    }
+
+    if (filters.minPrice || filters.maxPrice) {
+      result = result.filter((product) => {
+        const price = parseFloat(product.price);
+        const min = filters.minPrice ? parseFloat(filters.minPrice) : 0;
+        const max = filters.maxPrice ? parseFloat(filters.maxPrice) : Infinity;
+        return price >= min && price <= max;
+      });
+    }
+
+    if (filters.rating) {
+      result = result.filter(
+        (product) => product.rating >= parseFloat(filters.rating)
+      );
+    }
+
+    if (sortOption) {
+      switch (sortOption) {
+        case "price-low-to-high":
+          result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+          break;
+        case "price-high-to-low":
+          result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+          break;
+        case "rating":
+          result.sort((a, b) => b.rating - a.rating);
+          break;
+        case "newest":
+          result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+        default:
+          break;
+      }
+    }
+
+    setFilteredProducts(result);
+  }, [searchQuery, filters, sortOption, products]);
+
+  const productsByCategory = filteredProducts.reduce((acc, product) => {
     if (!acc[product.category]) {
       acc[product.category] = [];
     }
@@ -119,6 +186,80 @@ export default function ProductsPage({ productId }) {
           Find the best deals on high-quality second-hand items. Shop smart,
           save big!
         </motion.p>
+
+        <div className="mt-6 max-w-4xl mx-auto px-4">
+          <input
+            type="text"
+            placeholder="Search by name or category..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+          />
+
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <select
+              value={filters.category}
+              onChange={(e) =>
+                setFilters({ ...filters, category: e.target.value })
+              }
+              className="w-full text-gray-500 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category.name} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex space-x-2 w-full">
+              <input
+                type="number"
+                placeholder="Min Price"
+                value={filters.minPrice}
+                onChange={(e) =>
+                  setFilters({ ...filters, minPrice: e.target.value })
+                }
+                className="w-1/2  text-gray-500 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              />
+              <input
+                type="number"
+                placeholder="Max Price"
+                value={filters.maxPrice}
+                onChange={(e) =>
+                  setFilters({ ...filters, maxPrice: e.target.value })
+                }
+                className="w-1/2 px-4 text-gray-500 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
+              />
+            </div>
+
+            <select
+              value={filters.rating}
+              onChange={(e) =>
+                setFilters({ ...filters, rating: e.target.value })
+              }
+              className="w-full text-gray-500 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
+            >
+              <option value="">All Ratings</option>
+              <option value="4">4 Stars & Up</option>
+              <option value="3">3 Stars & Up</option>
+              <option value="2">2 Stars & Up</option>
+              <option value="1">1 Star & Up</option>
+            </select>
+
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="w-full px-4 text-gray-500 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
+            >
+              <option value="">Sort By</option>
+              <option value="price-low-to-high">Price: Low to High</option>
+              <option value="price-high-to-low">Price: High to Low</option>
+              <option value="rating">Rating</option>
+              <option value="newest">Newest</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="container mx-auto p-6 py-12">
@@ -169,6 +310,7 @@ export default function ProductsPage({ productId }) {
           );
         })}
       </div>
+
       <div className="mt-6">
         <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
         <div className="mb-4">
@@ -190,6 +332,7 @@ export default function ProductsPage({ productId }) {
           ))
         )}
       </div>
+
       <Footer />
     </div>
   );
